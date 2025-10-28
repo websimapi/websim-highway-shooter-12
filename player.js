@@ -139,10 +139,20 @@ export default class Player {
         const weaponOffset = this.height * 0.1; // Weapon center offset from player center
         const weaponTipOffset = (this.height * 0.8) / 2; // Half of weapon's height
         const totalForwardOffset = weaponOffset + weaponTipOffset;
+
+        // Add a small horizontal offset to move the projectile to the right side of the gun
+        const horizontalOffset = this.width * 0.05; // 5% of player width to the right
     
         // Calculate the projectile's starting position based on player's rotation
-        const projectileX = centerX + Math.sin(this.rotation) * totalForwardOffset - (10 / 2); // 10 is projectile width
-        const projectileY = centerY - Math.cos(this.rotation) * totalForwardOffset;
+        // We need to apply both the forward offset and the horizontal offset, rotated correctly.
+        const projectileX = centerX 
+                          + Math.sin(this.rotation) * totalForwardOffset // Forward component
+                          + Math.cos(this.rotation) * horizontalOffset   // Sideways component
+                          - (10 / 2); // Center the projectile image (10 is projectile width)
+
+        const projectileY = centerY 
+                          - Math.cos(this.rotation) * totalForwardOffset // Forward component
+                          + Math.sin(this.rotation) * horizontalOffset;  // Sideways component
     
         this.game.addProjectile(new Projectile(this.game, projectileX, projectileY));
     }
